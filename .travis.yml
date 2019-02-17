@@ -1,0 +1,51 @@
+---
+addons:
+  apt:
+    packages:
+      - aspell
+      - aspell-en
+language: perl
+perl:
+  - blead
+  - dev
+  - '5.28'
+  - '5.26'
+  - '5.24'
+  - '5.22'
+  - '5.20'
+  - '5.18'
+  - '5.16'
+  - '5.14'
+  - '5.12'
+  - '5.10'
+cache:
+  directories:
+    - '~/perl5'
+matrix:
+  allow_failures:
+    - perl: blead
+  fast_finish: 1
+  include:
+    - env: COVERAGE=1
+      perl: '5.28'
+before_install:
+  - cpanm --notest App::cpm
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
+install:
+  - 'cpan-install --coverage   # installs coverage prereqs, if enabled'
+  - AUTHOR_TESTING=0 cpm install --cpanfile cpanfile --workers $(test-jobs) --global --with-recommends --with-suggests --with-configure --with-develop
+script:
+  - prove -lrv t
+notifications:
+  email:
+    on_failure: alway
+    on_success: always
+    recipients:
+      - olaf@wundersolutions.com
+### __app_cisetup__
+# ---
+# force_threaded_perls: 0
+# perl_caching: 1
+
+### __app_cisetup__
